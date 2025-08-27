@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97552268638",
+    "project_id": "part-bet",
+    "storage_bucket": "part-bet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97552268638:android:22eb5a6b6d5c62ab0be3cf",
+        "android_client_info": {
+          "package_name": "com.partbet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNus_5qL7N7esdUX-PTsPGJ8MqgZnwQuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
