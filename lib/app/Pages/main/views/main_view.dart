@@ -24,13 +24,23 @@ class MainView extends GetView<NavController> {
     }
   }
 
-  late final List<Widget> pages = [
-    HomeView(),
-    PartsView(),
-    ServicesView(),
-    OrdersScreen(),
-    ProfileView(),
-  ];
+  // Optimized: Lazy page loading - pages are created only when accessed
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return HomeView();
+      case 1:
+        return PartsView();
+      case 2:
+        return ServicesView();
+      case 3:
+        return OrdersScreen();
+      case 4:
+        return ProfileView();
+      default:
+        return HomeView();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +60,7 @@ class MainView extends GetView<NavController> {
           statusBarIconBrightness: Brightness.dark,
         ),
         child: Scaffold(
-          body: pages[controller.currentIndex.value],
+          body: _getPage(controller.currentIndex.value),
           backgroundColor: const Color(0xFF18100B),
           bottomNavigationBar: AppBottomNav(
             selectedIndex: controller.currentIndex.value,
