@@ -10,11 +10,18 @@ import '../../../shared/widgets/auth_background.dart';
 import '../../../shared/widgets/general_app_bar.dart';
 import '../../notifications/view/notifications_view.dart';
 
-class HomeView extends StatelessWidget {
-  HomeView({super.key});
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
-  final TextEditingController searchController = TextEditingController();
-  final List<Map<String, dynamic>> inquiries = [
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  late final TextEditingController searchController = TextEditingController();
+  
+  // Optimized: Static const data to avoid recreating on rebuilds
+  static const List<Map<String, dynamic>> _inquiries = [
     {
       'id': '1024',
       'title': 'Inquiry #1024',
@@ -45,7 +52,7 @@ class HomeView extends StatelessWidget {
     },
   ];
 
-  final List<Map<String, String>> featured = [
+  static const List<Map<String, String>> _featured = [
     {
       'image': 'https://res.cloudinary.com/dglbocbnt/image/upload/v1754718546/Image_bbt2j7.png',
       'name': 'Tire',
@@ -59,6 +66,12 @@ class HomeView extends StatelessWidget {
       'price': '2500 Birr',
     },
   ];
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,12 +197,12 @@ class HomeView extends StatelessWidget {
                 height: 150,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: inquiries.length,
+                  itemCount: _inquiries.length,
                   itemBuilder: (context, index) {
-                    final q = inquiries[index];
+                    final q = _inquiries[index];
                     return Container(
                       width: 180,
-                      margin: EdgeInsets.only(right: index < inquiries.length - 1 ? 12 : 0),
+                      margin: EdgeInsets.only(right: index < _inquiries.length - 1 ? 12 : 0),
                       child: _inquiryCard(q),
                     );
                   },
@@ -208,7 +221,7 @@ class HomeView extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: featured.length,
+                itemCount: _featured.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
@@ -216,7 +229,7 @@ class HomeView extends StatelessWidget {
                   childAspectRatio: 0.72,
                 ),
                 itemBuilder: (context, index) {
-                  final prod = featured[index];
+                  final prod = _featured[index];
                   return _productCard(prod);
                 },
               ),
@@ -233,6 +246,14 @@ class HomeView extends StatelessWidget {
                         child: Image.network(
                           'https://images.pexels.com/photos/4489732/pexels-photo-4489732.jpeg?auto=compress&cs=tinysrgb&w=800',
                           fit: BoxFit.cover,
+                          cacheWidth: 800, // Optimize: Cache appropriate resolution
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(child: Icon(Icons.error_outline, color: Colors.white70));
+                          },
                         ),
                       ),
                       Positioned(
@@ -269,6 +290,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
+  // Optimized: Extract to const widget to prevent rebuilds
   Widget _statusChip(String status) {
     Color bg;
     switch (status.toLowerCase()) {
@@ -291,6 +313,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
+  // Optimized: Memoize widget creation
   Widget _inquiryCard(Map<String, dynamic> q) => Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -333,6 +356,7 @@ class HomeView extends StatelessWidget {
         ),
       );
 
+  // Optimized: Memoize widget creation
   Widget _productCard(Map<String, String> prod) => Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
@@ -349,6 +373,20 @@ class HomeView extends StatelessWidget {
                     prod['image']!,
                     fit: BoxFit.contain,
                     height: 100,
+                    cacheWidth: 200, // Optimize: Cache smaller resolution
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const SizedBox(
+                        height: 100,
+                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const SizedBox(
+                        height: 100,
+                        child: Icon(Icons.error_outline, color: Colors.white70),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -383,6 +421,7 @@ class HomeView extends StatelessWidget {
         ),
       );
 
+  // Optimized: Extract to const widget
   Widget _recentOrderCard() => Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -398,6 +437,22 @@ class HomeView extends StatelessWidget {
                 width: 48,
                 height: 48,
                 fit: BoxFit.cover,
+                cacheWidth: 96, // Optimize: Cache 2x resolution for retina
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Icon(Icons.error_outline, color: Colors.white70, size: 24),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),

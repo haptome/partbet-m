@@ -1,6 +1,4 @@
 import 'package:encrypt_shared_preferences/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +6,6 @@ import 'package:partbet/app/core/config/app_theme.dart';
 import 'package:partbet/app/core/config/app_constant.dart';
 import 'package:partbet/app/core/localization/translations.dart';
 import 'package:partbet/app/core/services/language_service.dart';
-import 'package:partbet/app/core/services/notification_service.dart';
 
 import 'package:partbet/app/init/app_binding.dart';
 import 'package:partbet/app/routes/app_pages.dart';
@@ -16,9 +13,15 @@ import 'package:partbet/app/routes/app_routes.dart';
 
 import 'package:get/get.dart';
 import 'package:partbet/app/utils/env_loader.dart';
-import 'package:partbet/firebase_options.dart';
 
 import 'app/init/service_initializer.dart';
+
+// Optimized: Removed unused imports (firebase_core, firebase_messaging, notification_service, firebase_options)
+// Uncomment when Firebase is enabled:
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:partbet/app/core/services/notification_service.dart';
+// import 'package:partbet/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,10 +42,9 @@ void main() async {
   await Env.load();
 
   await initServices();
-  await LanguageService().getSavedLocale();
-
+  // Optimized: Remove duplicate call
   final savedLocale = await LanguageService().getSavedLocale();
-    await EncryptedSharedPreferences.initialize('initializationKey');
+  await EncryptedSharedPreferences.initialize('initializationKey');
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
